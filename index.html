@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>即時儀表板（直達入口）</title>
+<style>body{background:#1a1a2e;color:#8899aa;font-family:'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style>
+</head>
+<body>
+<div id="msg">載入即時儀表板中…</div>
+<script>
+(function(){
+  var RAW='https://raw.githubusercontent.com/clintoniop/daily_stock_analysis/gh-pages/html/dashboard.html';
+  var tries=0;
+  function load(){
+    fetch(RAW+'?t='+Date.now(),{cache:'no-store'}).then(function(r){
+      if(!r.ok){throw new Error('HTTP '+r.status);}
+      return r.text();
+    }).then(function(h){
+      document.open();document.write(h);document.close();
+    }).catch(function(e){
+      tries++;
+      var m=document.getElementById('msg');
+      if(m){m.textContent='載入失敗 ('+e.message+')，重試中… '+tries;}
+      setTimeout(load,Math.min(3000+tries*1000,10000));
+    });
+  }
+  load();
+})();
+</script>
+</body>
+</html>
